@@ -24,7 +24,17 @@ const options = {
     enabled: false,
   },
   tooltip: {
-    enabled: false,
+    enabled: true,
+    x: {
+      show: false,
+    },
+    y: {
+      show: true,
+      formatter: (value) => `${value} alunos`,
+      title: {
+        formatter: () => "Serie: ",
+      },
+    },
   },
   xaxis: {
     type: "datetime",
