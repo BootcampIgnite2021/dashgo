@@ -15,9 +15,6 @@ export function NavSection({ title, children }: NavSectionProps) {
       </Text>
 
       <Box>
-        <Text fontWeight="bold" color="gray.400" fontSize="small">
-          GERAL
-        </Text>
         <Stack spacing="4" marginTop="8" align="stretch">
           {children}
         </Stack>

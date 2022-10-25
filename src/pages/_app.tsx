@@ -3,11 +3,14 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { theme } from "../styles/theme";
 
 import "../styles/apexcharts.css";
+import { DrawerSiderbarNavProvider } from "../contexts/DrawerSiderbarNavContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <Component {...pageProps} />
+      <DrawerSiderbarNavProvider>
+        <Component {...pageProps} />
+      </DrawerSiderbarNavProvider>
     </ChakraProvider>
   );
 }
