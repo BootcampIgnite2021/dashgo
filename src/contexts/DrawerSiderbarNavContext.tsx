@@ -22,7 +22,7 @@ const DrawerSiderbarNavProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   React.useEffect(() => {
-    toggle();
+    setOpen(false);
   }, [router.asPath]);
 
   return (
