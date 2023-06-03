@@ -3,3 +3,8 @@ export type User = {
   email: string;
   created_at: string;
 };
+
+export type UserResponse = Omit<User, "created_at"> & {
+  id: string;
+  createdAt: string;
+};
