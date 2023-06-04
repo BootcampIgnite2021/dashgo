@@ -1,9 +1,13 @@
 import { useQuery } from "react-query";
 import { api } from "../services/api";
-import { UserResponse } from "../interfaces/users";
+import { UserResponsePagination } from "../interfaces/users";
 
-export async function getUsres(): Promise<UserResponse[]> {
-  const { data } = await api.get("/users");
+export async function getUsres(page: number): Promise<UserResponsePagination> {
+  const { data, headers } = await api.get("/users", {
+    params: { page },
+  });
+
+  const totalCount = Number(headers["x-total-count"]);
   const users = data.users.map((user) => {
     return {
       id: user.id,
@@ -17,11 +21,11 @@ export async function getUsres(): Promise<UserResponse[]> {
     };
   });
 
-  return users;
+  return { users, totalCount };
 }
 
-export function useUsers() {
-  return useQuery("users", getUsres, {
-    staleTime: 1000 * 5, // 5 seconds
+export function useUsers(page: number) {
+  return useQuery(["users", page], () => getUsres(page), {
+    staleTime: 1000 * 60 * 10, // 10 minutes
   });
 }
