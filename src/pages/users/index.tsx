@@ -23,21 +23,29 @@ import { RiAddLine } from "react-icons/ri";
 import Header from "../../components/Header";
 import Pagination from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
-import { useQuery } from "react-query";
 import { api } from "../../services/api";
-import { useUsers } from "../../hooks/useUsers";
+import { getUsres, useUsers } from "../../hooks/useUsers";
 import { queryClient } from "../../services/queryClient";
+import { GetServerSideProps } from "next";
+import { UserResponse } from "../../interfaces/users";
 
-export default function UserList() {
+interface Props {
+  users: UserResponse;
+  totalCount: number;
+}
+
+export default function UserList({ users, totalCount }: Props) {
   const [page, setPage] = useState(1);
-  const { data, isLoading, isFetching, error } = useUsers(page);
+  const { data, isLoading, isFetching, error } = useUsers(page, {
+    initialData: users,
+  });
 
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true,
   });
 
-  const handlePrefetchData = async (userId: number) => {
+  const handlePrefetchData = async (userId: string) => {
     await queryClient.prefetchQuery(
       ["user", userId],
       async () => {
@@ -118,9 +126,7 @@ export default function UserList() {
                         <Box>
                           <Link
                             color="purple.400"
-                            onMouseEnter={() =>
-                              handlePrefetchData(Number(item.id))
-                            }
+                            onMouseEnter={() => handlePrefetchData(item.id)}
                           >
                             <Text fontWeight="bold">{item.name}</Text>
                           </Link>
@@ -148,3 +154,14 @@ export default function UserList() {
     </Box>
   );
 }
+
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const { users, totalCount } = await getUsres(1);
+
+//   return {
+//     props: {
+//       users,
+//       totalCount,
+//     },
+//   };
+// };

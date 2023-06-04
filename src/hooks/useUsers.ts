@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { UseQueryOptions, UseQueryResult, useQuery } from "react-query";
 import { api } from "../services/api";
 import { UserResponsePagination } from "../interfaces/users";
 
@@ -24,8 +24,9 @@ export async function getUsres(page: number): Promise<UserResponsePagination> {
   return { users, totalCount };
 }
 
-export function useUsers(page: number) {
+export function useUsers(page: number, options?: UseQueryOptions) {
   return useQuery(["users", page], () => getUsres(page), {
     staleTime: 1000 * 60 * 10, // 10 minutes
-  });
+    ...options,
+  }) as UseQueryResult<UserResponsePagination, unknown>;
 }

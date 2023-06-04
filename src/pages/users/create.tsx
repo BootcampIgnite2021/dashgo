@@ -5,7 +5,6 @@ import {
   Flex,
   Heading,
   HStack,
-  InputGroup,
   SimpleGrid,
   VStack,
 } from "@chakra-ui/react";
@@ -17,7 +16,12 @@ import { Sidebar } from "../../components/Sidebar";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
+import { useMutation } from "react-query";
+
 import * as Yup from "yup";
+import { api } from "../../services/api";
+import { queryClient } from "../../services/queryClient";
+import { useRouter } from "next/router";
 
 interface Props {
   name: string;
@@ -40,17 +44,43 @@ const schema = Yup.object().shape({
 });
 
 export default function UserCreate() {
+  const router = useRouter();
+
+  const createUser = useMutation(
+    async (user: Props) => {
+      const response = await api.post("users", {
+        user: {
+          ...user,
+          created_at: new Date(),
+        },
+      });
+      return response.data.user;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("users");
+      },
+    }
+  );
+
   const { register, formState, handleSubmit } = useForm({
     resolver: yupResolver(schema),
   });
 
   const { errors } = formState;
 
+  // const handleSubmitCreateUser: SubmitHandler<Props> = async (
+  //   values: Props
+  // ) => {
+  //   await new Promise((resolve) => setTimeout(resolve, 2000));
+  //   console.log(values);
+  // };
+
   const handleSubmitCreateUser: SubmitHandler<Props> = async (
     values: Props
   ) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(values);
+    await createUser.mutateAsync(values);
+    router.push("/users");
   };
 
   return (
